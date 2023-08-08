@@ -9,29 +9,26 @@
             margin: 0;
             padding: 0;
         }
-        
-        /* Header styling */
-        nav {
-            background-color: #333;
+
+        /* Top banner */
+        .top-banner {
+            background-color: #0071c5;
             color: #fff;
-            padding: 10px 0;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            margin-right: 20px;
+            margin-top: 20px;
+            width: 90px;
+            height: 90px;
+        }
+
+        .website-name {
             text-align: center;
-        }
-        
-        .header-tabs {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .header-tabs li {
-            display: inline;
-            margin: 0 10px;
-        }
-        
-        .header-tabs li a {
-            text-decoration: none;
-            color: #fff;
+            flex-grow: 1;
         }
         
         /* Sidebar styling */
@@ -57,7 +54,15 @@
             text-decoration: none;
             color: #333;
         }
-        
+        .search-bar {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+         }
+
+        .search-header {
+            margin-right: 10px;
+        }
         /* Content styling */
         .content {
             margin-left: 250px; /* To account for the sidebar width */
@@ -66,20 +71,23 @@
     </style>
 </head>
 <body>
-    <nav>
-        <ul class="header-tabs">
-            <li><a href="{{ url_for('home') }}">Home</a></li>
-            <li><a href="{{ url_for('about') }}">About</a></li>
-            <li><a href="{{ url_for('contact') }}">Contact</a></li>
-        </ul>
-    </nav>
+    <div class="top-banner">
+        <div class="logo">
+            <img src="{{url_for('static', filename='intel_logo.png')}}" alt="Logo" style="max-width: 100%; height: auto;">
+        </div>
+        <h1 class="website-name">Intel Tool</h1>
+    </div>
     
     <div class="sidebar">
         <ul class="side-nav">
-            <li><a href="{{ url_for('secondary') }}">Secondary Page</a></li>
-            <!-- Add more secondary page links as needed -->
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('page1') }}">Page 1</a></li>
+            <li><a href="{{ url_for('page2') }}">Page 2</a></li>
+            <li><a href="{{ url_for('page3') }}">Page 3</a></li>
+            <li><a href="{{ url_for('faq') }}">Frequently Asked Questions</a></li>
         </ul>
     </div>
+    
     
     <div class="content">
         {% block content %}{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>Page 2</h1>
+
+    <div class="container">
+        <div class="search-container">
+            <h2 class="section-header">Search Token Name</h2>
+            <input type="text" id="search-token-name" placeholder="Enter Token Name">
+        </div>
+        
+        <div class="output-container">
+            <div class="output-section">
+                <h2 class="section-header">Token Data</h2>
+                <div id="token-data-output"></div>
+            </div>
+            
+            <div class="output-section">
+                <h2 class="section-header">Token Data Table</h2>
+                <div id="token-data-table-output"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const searchInput = document.getElementById('search-token-name');
+        const tokenDataOutput = document.getElementById('token-data-output');
+        const tokenDataTableOutput = document.getElementById('token-data-table-output');
+
+        searchInput.addEventListener('input', (event) => {
+            const searchTerm = event.target.value.trim().toLowerCase();
+            
+            // Filter data based on search term
+            const filteredData = data.filter(record => record['Token Name'].toLowerCase().includes(searchTerm));
+            
+            // Display Token Data
+            displayTokenData(filteredData);
+
+            // Display Token Data Table
+            displayTokenDataTable(filteredData);
+        });
+
+        function displayTokenData(data) {
+            if (data.length === 0) {
+                tokenDataOutput.innerHTML = '<p>No matching data found.</p>';
+                return;
+            }
+
+            let outputHTML = '<ul>';
+            data.forEach(record => {
+                outputHTML += `<li><strong>Token Name:</strong> ${record['Token Name']}</li>`;
+                for (const key in record) {
+                    if (key !== 'Token Name') {
+                        outputHTML += `<li><strong>${key}:</strong> ${record[key]}</li>`;
+                    }
+                }
+                outputHTML += '<br>';
+            });
+            outputHTML += '</ul>';
+            tokenDataOutput.innerHTML = outputHTML;
+        }
+
+        function displayTokenDataTable(data) {
+            if (data.length === 0) {
+                tokenDataTableOutput.innerHTML = '<p>No matching data found.</p>';
+                return;
+            }
+
+            let tableHTML = '<table class="data-table">';
+            tableHTML += '<tr>';
+            for (const key in data[0]) {
+                tableHTML += `<th>${key}</th>`;
+            }
+            tableHTML += '</tr>';
+
+            data.forEach(record => {
+                tableHTML += '<tr>';
+                for (const key in record) {
+                    tableHTML += `<td>${record[key]}</td>`;
+                }
+                tableHTML += '</tr>';
+            });
+
+            tableHTML += '</table>';
+            tokenDataTableOutput.innerHTML = tableHTML;
+        }
+    </script>
+
+    
+<style>
+    /* Container styling */
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    /* Search container styling */
+    .search-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    /* Output container styling */
+    .output-container {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    /* Output section styling */
+    .output-section {
+        border: 1px solid #ddd;
+        padding: 20px;
+        width: 48%;
+    }
+
+    /* Section header styling */
+    .section-header {
+        margin-top: 0;
+    }
+</style>
+{% endblock %}
+
+
