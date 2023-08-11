@@ -26,9 +26,25 @@ def get_data():
     else:
         return jsonify({'error': 'Token not provided'})
 
-@app.route('/page2')
+@app.route('/page2', methods=['GET'])
 def page2():
-    return render_template('page2.html')
+    return render_template('page2.html', data=data)
+
+
+@app.route('/get_data_name', methods=['GET'])
+def get_data_name():
+    token = request.args.get('token', '')
+
+    # Load data from 'data.xlsx'
+    data = pd.read_excel('data/data.xlsx')
+
+    # Filter data based on the selected token
+    filtered_data = data[data['Token Name'].str.contains(token, case=False)]
+
+    # Convert filtered_data to a list of dictionaries
+    token_data = filtered_data.to_dict(orient='records')
+
+    return jsonify(token_data)
 
 @app.route('/page3')
 def page3():

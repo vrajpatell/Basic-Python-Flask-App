@@ -1,5 +1,4 @@
 {% extends 'layout.html' %}
-
 {% block content %}
     <h1>Page 2</h1>
 
@@ -7,6 +6,7 @@
         <div class="search-container">
             <h2 class="section-header">Search Token Name</h2>
             <input type="text" id="search-token-name" placeholder="Enter Token Name">
+            <button id="search-button">Search</button>
         </div>
         
         <div class="output-container">
@@ -21,31 +21,41 @@
             </div>
         </div>
     </div>
-    
+
+
     <script>
         const searchInput = document.getElementById('search-token-name');
+        const searchButton = document.getElementById('search-button');
         const tokenDataOutput = document.getElementById('token-data-output');
         const tokenDataTableOutput = document.getElementById('token-data-table-output');
-
-        searchInput.addEventListener('input', (event) => {
-            const searchTerm = event.target.value.trim().toLowerCase();
-            
-            // Filter data based on search term
-            const filteredData = data.filter(record => record['Token Name'].toLowerCase().includes(searchTerm));
-            
-            // Display Token Data
-            displayTokenData(filteredData);
-
-            // Display Token Data Table
-            displayTokenDataTable(filteredData);
+    
+        searchButton.addEventListener('click', () => {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            filterAndDisplayData(searchTerm);
         });
-
+    
+        function filterAndDisplayData(searchTerm) {
+            // Fetch data from the server using AJAX or fetch API
+            fetch(`/get_data_name?token=${searchTerm}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Display Token Data
+                    displayTokenData(data);
+    
+                    // Display Token Data Table
+                    displayTokenDataTable(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching data', error);
+                });
+        }
+    
         function displayTokenData(data) {
             if (data.length === 0) {
                 tokenDataOutput.innerHTML = '<p>No matching data found.</p>';
                 return;
             }
-
+    
             let outputHTML = '<ul>';
             data.forEach(record => {
                 outputHTML += `<li><strong>Token Name:</strong> ${record['Token Name']}</li>`;
@@ -59,20 +69,20 @@
             outputHTML += '</ul>';
             tokenDataOutput.innerHTML = outputHTML;
         }
-
+    
         function displayTokenDataTable(data) {
             if (data.length === 0) {
                 tokenDataTableOutput.innerHTML = '<p>No matching data found.</p>';
                 return;
             }
-
+    
             let tableHTML = '<table class="data-table">';
             tableHTML += '<tr>';
             for (const key in data[0]) {
                 tableHTML += `<th>${key}</th>`;
             }
             tableHTML += '</tr>';
-
+    
             data.forEach(record => {
                 tableHTML += '<tr>';
                 for (const key in record) {
@@ -80,54 +90,86 @@
                 }
                 tableHTML += '</tr>';
             });
-
+    
             tableHTML += '</table>';
             tokenDataTableOutput.innerHTML = tableHTML;
         }
     </script>
-
     
-<style>
-    /* Container styling */
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        border: 1px solid #ddd;
-        padding: 20px;
-        margin-top: 20px;
-    }
-
-    /* Search container styling */
-    .search-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        border: 1px solid #ddd;
-        padding: 20px;
-        margin-bottom: 20px;
-        width: 100%;
-    }
-
-    /* Output container styling */
-    .output-container {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-    }
-
-    /* Output section styling */
-    .output-section {
-        border: 1px solid #ddd;
-        padding: 20px;
-        width: 48%;
-    }
-
-    /* Section header styling */
-    .section-header {
-        margin-top: 0;
-    }
-</style>
+    <style>
+        .header h2 {
+            margin: 0px 10px; 
+            display: inline-block;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+        }
+    
+        .search-container {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        input {
+            height: 20px;
+            flex: 0 0 200px;
+            margin-left: 10px;
+            outline: none;
+            margin-right: 20px;
+        }
+        button {
+            background-color:#3695f7 ;
+            color: white;
+            font-size:.8rem!important;;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            margin-left: 20px;
+        }
+        .output-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+    
+        .output-section {
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 48%;
+        }
+    
+        .section-header {
+            margin-top: 0;
+        }
+    
+        .data-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+    
+        .data-table th,
+        .data-table td {
+            padding: 8px;
+            text-align: left;
+        }
+    
+        .data-table th {
+            background-color: #f2f2f2;
+        }
+    
+        .data-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+    
 {% endblock %}
-
-
