@@ -33,23 +33,29 @@
             const searchTerm = searchInput.value.trim().toLowerCase();
             filterAndDisplayData(searchTerm);
         });
+
     
         function filterAndDisplayData(searchTerm) {
-            // Fetch data from the server using AJAX or fetch API
+
             fetch(`/get_data_name?token=${searchTerm}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     // Display Token Data
                     displayTokenData(data);
-    
+                    console.log("Data:", data);
                     // Display Token Data Table
                     displayTokenDataTable(data);
                 })
                 .catch(error => {
                     console.error('Error fetching data', error);
                 });
-        }
-    
+        } 
+
         function displayTokenData(data) {
             if (data.length === 0) {
                 tokenDataOutput.innerHTML = '<p>No matching data found.</p>';

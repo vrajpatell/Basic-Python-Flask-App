@@ -1,12 +1,14 @@
 # Import the necessary modules
 from flask import Flask, render_template, jsonify, request
 import pandas as pd
+import numpy as np
 
 app = Flask(__name__)
 
 
 data = pd.read_excel('data/data.xlsx')
-unique_tokens = data['Token Number'].unique()
+data.replace(np.nan, '', regex=True)
+unique_tokens = data['Level'].unique()
 
 @app.route('/')
 def home():
@@ -20,7 +22,7 @@ def page1():
 def get_data():
     selected_token = request.args.get('token')
     if selected_token:
-        selected_data = data[data['Token Number'] == int(selected_token)]
+        selected_data = data[data['Level'] == int(selected_token)]
         selected_data_json = selected_data.to_json(orient='records')
         return selected_data_json
     else:
@@ -33,18 +35,22 @@ def page2():
 
 @app.route('/get_data_name', methods=['GET'])
 def get_data_name():
-    token = request.args.get('token', '')
+    search_term = request.args.get('token')
+    if search_term:
+        # Convert 'Token Name' column to lowercase and compare
+        search_term_lower = search_term.lower()
+        filtered_data = data[data['Token Name'].str.lower() == search_term_lower]
 
-    # Load data from 'data.xlsx'
-    data = pd.read_excel('data/data.xlsx')
+        # Check if any data is found
+        if not filtered_data.empty:
+            search_term_json = filtered_data.to_json(orient='records')
+            return search_term_json
+        else:
+            return jsonify({'error': 'No matching data found'})
+    else:
+        return jsonify({'error': 'Search term is required'})
 
-    # Filter data based on the selected token
-    filtered_data = data[data['Token Name'].str.contains(token, case=False)]
 
-    # Convert filtered_data to a list of dictionaries
-    token_data = filtered_data.to_dict(orient='records')
-
-    return jsonify(token_data)
 
 @app.route('/page3')
 def page3():
